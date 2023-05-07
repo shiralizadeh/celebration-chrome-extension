@@ -1,0 +1,16 @@
+{
+  "name": "Celebration Chrome Extension",
+  "description": "Celebration Animation in your tab",
+  "version": "0.1",
+  "manifest_version": 3,
+  "permissions": ["activeTab", "scripting"],
+  "action": {},
+  "background": {
+    "service_worker": "dist/serviceWorker.js"
+  },
+  "icons": {
+    "16": "assets/logo-128.png",
+    "48": "assets/logo-128.png",
+    "128": "assets/logo-128.png"
+  }
+}

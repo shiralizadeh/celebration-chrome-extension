@@ -1,0 +1,20 @@
+{
+  "name": "celebration-chrome-extension",
+  "version": "1.0.0",
+  "description": "Celebration Animation in your tab",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --config webpack.config.js"
+  },
+  "keywords": [],
+  "author": "Mohamad Shiralizadeh",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chrome": "^0.0.235",
+    "copy-webpack-plugin": "^11.0.0",
+    "ts-loader": "^9.4.2",
+    "typescript": "^5.0.4",
+    "webpack": "^5.82.0",
+    "webpack-cli": "^5.1.0"
+  }
+}
