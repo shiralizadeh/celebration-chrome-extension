@@ -1,957 +1,179 @@
-var frameRate = 30;
-var dt = 1.0 / frameRate;
-var DEG_TO_RAD = Math.PI / 180;
-var RAD_TO_DEG = 180 / Math.PI;
-var colors = [
-  ["#df0049", "#660671"],
-  ["#00e857", "#005291"],
-  ["#2bebbc", "#05798a"],
-  ["#ffd200", "#b06c00"],
-];
-
-class Vector22 {
-  x: number;
-  y: number;
-  z: number;
-
-  constructor(_x: number, _y: number, _z: number = 0) {
-    (this.x = _x), (this.y = _y), (this.z = _z);
+const confettiStyles = `
+.confetti {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1000;
   }
-
-  Length() {
-    return Math.sqrt(this.SqrLength());
+  
+  .confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 30px;
+    background: #ffd300;
+    top: 0;
+    opacity: 0;
   }
-
-  SqrLength() {
-    return this.x * this.x + this.y * this.y;
+  
+  .confetti-piece:nth-child(1) {
+    left: 7%;
+    transform: rotate(-40deg);
+    animation: makeItRain 1000ms infinite ease-out;
+    animation-delay: 182ms;
+    animation-duration: 1116ms;
   }
-
-  Equals(_vec0: Vector22, _vec1: Vector22) {
-    return _vec0.x == _vec1.x && _vec0.y == _vec1.y;
+  
+  .confetti-piece:nth-child(2) {
+    left: 14%;
+    transform: rotate(4deg);
+    animation: makeItRain 1000ms infinite ease-out;
+    animation-delay: 161ms;
+    animation-duration: 1076ms;
   }
-
-  Add(_vec: Vector22) {
-    this.x += _vec.x;
-    this.y += _vec.y;
+  
+  .confetti-piece:nth-child(3) {
+    left: 21%;
+    transform: rotate(-51deg);
+    animation: makeItRain 1000ms infinite ease-out;
+    animation-delay: 481ms;
+    animation-duration: 1103ms;
   }
-
-  Sub(_vec: Vector22) {
-    this.x -= _vec.x;
-    this.y -= _vec.y;
+  
+  .confetti-piece:nth-child(4) {
+    left: 28%;
+    transform: rotate(61deg);
+    animation: makeItRain 1000ms infinite ease-out;
+    animation-delay: 334ms;
+    animation-duration: 708ms;
   }
-
-  Div(_f: number) {
-    this.x /= _f;
-    this.y /= _f;
+  
+  .confetti-piece:nth-child(5) {
+    left: 35%;
+    transform: rotate(-52deg);
+    animation: makeItRain 1000ms infinite ease-out;
+    animation-delay: 302ms;
+    animation-duration: 776ms;
   }
-
-  Mul(_f: number) {
-    this.x *= _f;
-    this.y *= _f;
+  
+  .confetti-piece:nth-child(6) {
+    left: 42%;
+    transform: rotate(38deg);
+    animation: makeItRain 1000ms infinite ease-out;
+    animation-delay: 180ms;
+    animation-duration: 1168ms;
   }
-
-  Normalize() {
-    var sqrLen = this.SqrLength();
-    if (sqrLen != 0) {
-      var factor = 1.0 / Math.sqrt(sqrLen);
-      this.x *= factor;
-      this.y *= factor;
+  
+  .confetti-piece:nth-child(7) {
+    left: 49%;
+    transform: rotate(11deg);
+    animation: makeItRain 1000ms infinite ease-out;
+    animation-delay: 395ms;
+    animation-duration: 1200ms;
+  }
+  
+  .confetti-piece:nth-child(8) {
+    left: 56%;
+    transform: rotate(49deg);
+    animation: makeItRain 1000ms infinite ease-out;
+    animation-delay: 14ms;
+    animation-duration: 887ms;
+  }
+  
+  .confetti-piece:nth-child(9) {
+    left: 63%;
+    transform: rotate(-72deg);
+    animation: makeItRain 1000ms infinite ease-out;
+    animation-delay: 149ms;
+    animation-duration: 805ms;
+  }
+  
+  .confetti-piece:nth-child(10) {
+    left: 70%;
+    transform: rotate(10deg);
+    animation: makeItRain 1000ms infinite ease-out;
+    animation-delay: 351ms;
+    animation-duration: 1059ms;
+  }
+  
+  .confetti-piece:nth-child(11) {
+    left: 77%;
+    transform: rotate(4deg);
+    animation: makeItRain 1000ms infinite ease-out;
+    animation-delay: 307ms;
+    animation-duration: 1132ms;
+  }
+  
+  .confetti-piece:nth-child(12) {
+    left: 84%;
+    transform: rotate(42deg);
+    animation: makeItRain 1000ms infinite ease-out;
+    animation-delay: 464ms;
+    animation-duration: 776ms;
+  }
+  
+  .confetti-piece:nth-child(13) {
+    left: 91%;
+    transform: rotate(-72deg);
+    animation: makeItRain 1000ms infinite ease-out;
+    animation-delay: 429ms;
+    animation-duration: 818ms;
+  }
+  
+  .confetti-piece:nth-child(odd) {
+    background: #7431e8;
+  }
+  
+  .confetti-piece:nth-child(even) {
+    z-index: 1;
+  }
+  
+  .confetti-piece:nth-child(4n) {
+    width: 5px;
+    height: 12px;
+    animation-duration: 2000ms;
+  }
+  
+  .confetti-piece:nth-child(3n) {
+    width: 3px;
+    height: 10px;
+    animation-duration: 2500ms;
+    animation-delay: 1000ms;
+  }
+  
+  .confetti-piece:nth-child(4n-7) {
+    background: red;
+  }
+  
+  @keyframes makeItRain {
+    from {
+      opacity: 0;
     }
-  }
-
-  Normalized() {
-    var sqrLen = this.SqrLength();
-    if (sqrLen != 0) {
-      var factor = 1.0 / Math.sqrt(sqrLen);
-      return new Vector22(this.x * factor, this.y * factor);
+    50% {
+      opacity: 1;
     }
-    return new Vector22(0, 0);
-  }
-
-  static Lerp(_vec0: Vector22, _vec1: Vector22, _t: number) {
-    return new Vector22(
-      (_vec1.x - _vec0.x) * _t + _vec0.x,
-      (_vec1.y - _vec0.y) * _t + _vec0.y
-    );
-  }
-
-  static Distance(_vec0: Vector22, _vec1: Vector22) {
-    return Math.sqrt(Vector22.SqrDistance(_vec0, _vec1));
-  }
-
-  static SqrDistance(_vec0: Vector22, _vec1: Vector22) {
-    var x = _vec0.x - _vec1.x;
-    var y = _vec0.y - _vec1.y;
-    return x * x + y * y + z * z;
-  }
-
-  static Scale(_vec0: Vector22, _vec1: Vector22) {
-    return new Vector22(_vec0.x * _vec1.x, _vec0.y * _vec1.y);
-  }
-
-  static Min(_vec0: Vector22, _vec1: Vector22) {
-    return new Vector22(Math.min(_vec0.x, _vec1.x), Math.min(_vec0.y, _vec1.y));
-  }
-
-  static Max(_vec0: Vector22, _vec1: Vector22) {
-    return new Vector22(Math.max(_vec0.x, _vec1.x), Math.max(_vec0.y, _vec1.y));
-  }
-
-  static ClampMagnitude(_vec0: Vector22, _len: number) {
-    var vecNorm = _vec0.Normalized;
-    return new Vector22(vecNorm.x * _len, vecNorm.y * _len);
-  }
-
-  static Sub(_vec0: Vector22, _vec1: Vector22) {
-    return new Vector22(
-      _vec0.x - _vec1.x,
-      _vec0.y - _vec1.y,
-      _vec0.z - _vec1.z
-    );
-  }
-}
-
-class EulerMass {
-  position: any;
-  mass: number;
-  drag: number;
-  force: Vector22;
-  velocity: Vector22;
-
-  constructor(_x: number, _y: number, _mass: number, _drag: number) {
-    this.position = new Vector22(_x, _y);
-    this.mass = _mass;
-    this.drag = _drag;
-    this.force = new Vector22(0, 0);
-    this.velocity = new Vector22(0, 0);
-  }
-
-  AddForce(_f: Vector22) {
-    this.force.Add(_f);
-  }
-
-  Integrate(_dt: number) {
-    var acc = this.CurrentForce(this.position);
-    acc.Div(this.mass);
-    var posDelta = new Vector22(this.velocity.x, this.velocity.y);
-    posDelta.Mul(_dt);
-    this.position.Add(posDelta);
-    acc.Mul(_dt);
-    this.velocity.Add(acc);
-    this.force = new Vector22(0, 0);
-  }
-
-  CurrentForce(_pos: any) {
-    var totalForce = new Vector22(this.force.x, this.force.y);
-    var speed = this.velocity.Length();
-    var dragVel = new Vector22(this.velocity.x, this.velocity.y);
-    dragVel.Mul(this.drag * this.mass * speed);
-    totalForce.Sub(dragVel);
-    return totalForce;
-  }
-}
-
-class ConfettiPaper {
-  pos: any;
-  rotationSpeed: any;
-  angle: any;
-  rotation: any;
-  cosA: any;
-  size: any;
-  oscillationSpeed: any;
-  xSpeed: any;
-  ySpeed: any;
-  corners: any;
-  time: any;
-  frontColor: any;
-  backColor: any;
-
-  static bounds = new Vector22(0, 0);
-
-  constructor(_x: number, _y: number) {
-    this.pos = new Vector22(_x, _y);
-    this.rotationSpeed = Math.random() * 600 + 800;
-    this.angle = DEG_TO_RAD * Math.random() * 360;
-    this.rotation = DEG_TO_RAD * Math.random() * 360;
-    this.cosA = 1.0;
-    this.size = 5.0;
-    this.oscillationSpeed = Math.random() * 1.5 + 0.5;
-    this.xSpeed = 40.0;
-    this.ySpeed = Math.random() * 60 + 50.0;
-    this.corners = new Array();
-    this.time = Math.random();
-    var ci = Math.round(Math.random() * (colors.length - 1));
-    this.frontColor = colors[ci][0];
-    this.backColor = colors[ci][1];
-    for (var i = 0; i < 4; i++) {
-      var dx = Math.cos(this.angle + DEG_TO_RAD * (i * 90 + 45));
-      var dy = Math.sin(this.angle + DEG_TO_RAD * (i * 90 + 45));
-      this.corners[i] = new Vector22(dx, dy);
+    to {
+      transform: translateY(350px);
     }
-  }
+  }  
+`;
 
-  Update(_dt: number) {
-    this.time += _dt;
-    this.rotation += this.rotationSpeed * _dt;
-    this.cosA = Math.cos(DEG_TO_RAD * this.rotation);
-    this.pos.x +=
-      Math.cos(this.time * this.oscillationSpeed) * this.xSpeed * _dt;
-    this.pos.y += this.ySpeed * _dt;
-    if (this.pos.y > ConfettiPaper.bounds.y) {
-      this.pos.x = Math.random() * ConfettiPaper.bounds.x;
-      this.pos.y = 0;
-    }
-  }
+export function initConfetti() {
+  console.log("initConfetti");
 
-  Draw(_g: any) {
-    if (this.cosA > 0) {
-      _g.fillStyle = this.frontColor;
-    } else {
-      _g.fillStyle = this.backColor;
-    }
-    _g.beginPath();
-    _g.moveTo(
-      this.pos.x + this.corners[0].x * this.size,
-      this.pos.y + this.corners[0].y * this.size * this.cosA
-    );
-    for (var i = 1; i < 4; i++) {
-      _g.lineTo(
-        this.pos.x + this.corners[i].x * this.size,
-        this.pos.y + this.corners[i].y * this.size * this.cosA
-      );
-    }
-    _g.closePath();
-    _g.fill();
-  }
-}
+  const styleTag = document.createElement("style");
+  const styleText = document.createTextNode(confettiStyles);
 
-class ConfettiRibbon {
-  static bounds = new Vector22(0, 0);
-  particleDist: any;
-  particleCount: any;
-  particleMass: any;
-  particleDrag: any;
-  frontColor: string;
-  backColor: string;
-  xOff: number;
-  yOff: number;
-  position: any;
-  velocityInherit: number;
-  time: number;
-  oscillationSpeed: number;
-  oscillationDistance: number;
-  ySpeed: number;
-  particles: any;
-  prevPosition: any;
+  styleTag.type = "text/css";
 
-  constructor(
-    _x: number,
-    _y: number,
-    _count: number,
-    _dist: number,
-    _thickness: number,
-    _angle: number,
-    _mass: number,
-    _drag: number
-  ) {
-    this.particleDist = _dist;
-    this.particleCount = _count;
-    this.particleMass = _mass;
-    this.particleDrag = _drag;
-    this.particleDist = new Array();
-    var ci = Math.round(Math.random() * (colors.length - 1));
-    this.frontColor = colors[ci][0];
-    this.backColor = colors[ci][1];
-    this.xOff = Math.cos(DEG_TO_RAD * _angle) * _thickness;
-    this.yOff = Math.sin(DEG_TO_RAD * _angle) * _thickness;
-    this.position = new Vector22(_x, _y);
-    this.position = new Vector22(_x, _y);
-    this.velocityInherit = Math.random() * 2 + 4;
-    this.time = Math.random() * 100;
-    this.oscillationSpeed = Math.random() * 2 + 2;
-    this.oscillationDistance = Math.random() * 40 + 40;
-    this.ySpeed = Math.random() * 40 + 80;
-    for (var i = 0; i < this.particleCount; i++) {
-      this.particles[i] = new EulerMass(
-        _x,
-        _y - i * this.particleDist,
-        this.particleMass,
-        this.particleDrag
-      );
-    }
-  }
+  styleTag.appendChild(styleText);
+  document.body.appendChild(styleTag);
 
-  Update(_dt: number) {
-    var i = 0;
-    this.time += _dt * this.oscillationSpeed;
-    this.position.y += this.ySpeed * _dt;
-    this.position.x += Math.cos(this.time) * this.oscillationDistance * _dt;
-    this.particles[0].position = this.position;
-    var dX = this.prevPosition.x - this.position.x;
-    var dY = this.prevPosition.y - this.position.y;
-    var delta = Math.sqrt(dX * dX + dY * dY);
-    this.prevPosition = new Vector22(this.position.x, this.position.y);
-    for (i = 1; i < this.particleCount; i++) {
-      var dirP = Vector22.Sub(
-        this.particles[i - 1].position,
-        this.particles[i].position
-      );
-      dirP.Normalize();
-      dirP.Mul((delta / _dt) * this.velocityInherit);
-      this.particles[i].AddForce(dirP);
-    }
-    for (i = 1; i < this.particleCount; i++) {
-      this.particles[i].Integrate(_dt);
-    }
-    for (i = 1; i < this.particleCount; i++) {
-      var rp2 = new Vector22(
-        this.particles[i].position.x,
-        this.particles[i].position.y
-      );
-      rp2.Sub(this.particles[i - 1].position);
-      rp2.Normalize();
-      rp2.Mul(this.particleDist);
-      rp2.Add(this.particles[i - 1].position);
-      this.particles[i].position = rp2;
-    }
-    if (
-      this.position.y >
-      ConfettiRibbon.bounds.y + this.particleDist * this.particleCount
-    ) {
-      this.Reset();
-    }
-  }
-
-  Reset() {
-    this.position.y = -Math.random() * ConfettiRibbon.bounds.y;
-    this.position.x = Math.random() * ConfettiRibbon.bounds.x;
-    this.prevPosition = new Vector22(this.position.x, this.position.y);
-    this.velocityInherit = Math.random() * 2 + 4;
-    this.time = Math.random() * 100;
-    this.oscillationSpeed = Math.random() * 2.0 + 1.5;
-    this.oscillationDistance = Math.random() * 40 + 40;
-    this.ySpeed = Math.random() * 40 + 80;
-    var ci = Math.round(Math.random() * (colors.length - 1));
-    this.frontColor = colors[ci][0];
-    this.backColor = colors[ci][1];
-    this.particles = new Array();
-    for (var i = 0; i < this.particleCount; i++) {
-      this.particles[i] = new EulerMass(
-        this.position.x,
-        this.position.y - i * this.particleDist,
-        this.particleMass,
-        this.particleDrag
-      );
-    }
-  }
-
-  Draw(_g: any) {
-    for (var i = 0; i < this.particleCount - 1; i++) {
-      var p0 = new Vector22(
-        this.particles[i].position.x + this.xOff,
-        this.particles[i].position.y + this.yOff
-      );
-      var p1 = new Vector22(
-        this.particles[i + 1].position.x + this.xOff,
-        this.particles[i + 1].position.y + this.yOff
-      );
-      if (
-        this.Side(
-          this.particles[i].position.x,
-          this.particles[i].position.y,
-          this.particles[i + 1].position.x,
-          this.particles[i + 1].position.y,
-          p1.x,
-          p1.y
-        ) < 0
-      ) {
-        _g.fillStyle = this.frontColor;
-        _g.strokeStyle = this.frontColor;
-      } else {
-        _g.fillStyle = this.backColor;
-        _g.strokeStyle = this.backColor;
-      }
-      if (i == 0) {
-        _g.beginPath();
-        _g.moveTo(this.particles[i].position.x, this.particles[i].position.y);
-        _g.lineTo(
-          this.particles[i + 1].position.x,
-          this.particles[i + 1].position.y
-        );
-        _g.lineTo(
-          (this.particles[i + 1].position.x + p1.x) * 0.5,
-          (this.particles[i + 1].position.y + p1.y) * 0.5
-        );
-        _g.closePath();
-        _g.stroke();
-        _g.fill();
-        _g.beginPath();
-        _g.moveTo(p1.x, p1.y);
-        _g.lineTo(p0.x, p0.y);
-        _g.lineTo(
-          (this.particles[i + 1].position.x + p1.x) * 0.5,
-          (this.particles[i + 1].position.y + p1.y) * 0.5
-        );
-        _g.closePath();
-        _g.stroke();
-        _g.fill();
-      } else if (i == this.particleCount - 2) {
-        _g.beginPath();
-        _g.moveTo(this.particles[i].position.x, this.particles[i].position.y);
-        _g.lineTo(
-          this.particles[i + 1].position.x,
-          this.particles[i + 1].position.y
-        );
-        _g.lineTo(
-          (this.particles[i].position.x + p0.x) * 0.5,
-          (this.particles[i].position.y + p0.y) * 0.5
-        );
-        _g.closePath();
-        _g.stroke();
-        _g.fill();
-        _g.beginPath();
-        _g.moveTo(p1.x, p1.y);
-        _g.lineTo(p0.x, p0.y);
-        _g.lineTo(
-          (this.particles[i].position.x + p0.x) * 0.5,
-          (this.particles[i].position.y + p0.y) * 0.5
-        );
-        _g.closePath();
-        _g.stroke();
-        _g.fill();
-      } else {
-        _g.beginPath();
-        _g.moveTo(this.particles[i].position.x, this.particles[i].position.y);
-        _g.lineTo(
-          this.particles[i + 1].position.x,
-          this.particles[i + 1].position.y
-        );
-        _g.lineTo(p1.x, p1.y);
-        _g.lineTo(p0.x, p0.y);
-        _g.closePath();
-        _g.stroke();
-        _g.fill();
-      }
-    }
-  }
-
-  Side(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number) {
-    return (x1 - x2) * (y3 - y2) - (y1 - y2) * (x3 - x2);
-  }
-}
-
-class ConfettiContext {
-  canvas: any;
-
-  constructor(parent: string) {
-    var i = 0;
-    var canvasParent = document.getElementById(parent)!;
-
-    const canvas = document.createElement("canvas");
-
-    this.canvas = canvas;
-
-    canvas.width = canvasParent.offsetWidth;
-    canvas.height = canvasParent.offsetHeight;
-
-    canvasParent.appendChild(canvas);
-    var context = canvas.getContext("2d");
-    var interval = null;
-    var confettiRibbonCount = 7;
-    var rpCount = 30;
-    var rpDist = 8.0;
-    var rpThick = 8.0;
-    var confettiRibbons = new Array();
-
-    ConfettiRibbon.bounds = new Vector22(canvas.width, canvas.height);
-
-    for (i = 0; i < confettiRibbonCount; i++) {
-      confettiRibbons[i] = new ConfettiRibbon(
-        Math.random() * canvas.width,
-        -Math.random() * canvas.height * 2,
-        rpCount,
-        rpDist,
-        rpThick,
-        45,
-        1,
-        0.05
-      );
-    }
-    var confettiPaperCount = 25;
-    var confettiPapers = new Array();
-    ConfettiPaper.bounds = new Vector22(canvas.width, canvas.height);
-    for (i = 0; i < confettiPaperCount; i++) {
-      confettiPapers[i] = new ConfettiPaper(
-        Math.random() * canvas.width,
-        Math.random() * canvas.height
-      );
-    }
-  }
-
-  resize() {
-    canvas.width = canvasParent.offsetWidth;
-    canvas.height = canvasParent.offsetHeight;
-    ConfettiPaper.bounds = new Vector2(canvas.width, canvas.height);
-    ConfettiRibbon.bounds = new Vector2(canvas.width, canvas.height);
-  }
-
-  start() {
-    this.stop();
-    var context = this;
-    this.interval = setInterval(function () {
-      confetti.update();
-    }, 1000.0 / frameRate);
-  }
-
-  stop() {
-    clearInterval(this.interval);
-  }
-
-  update() {
-    var i = 0;
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    for (i = 0; i < confettiPaperCount; i++) {
-      confettiPapers[i].Update(dt);
-      confettiPapers[i].Draw(context);
-    }
-    for (i = 0; i < confettiRibbonCount; i++) {
-      confettiRibbons[i].Update(dt);
-      confettiRibbons[i].Draw(context);
-    }
-  }
-}
-
-function Confetti() {
-  var frameRate = 30;
-  var dt = 1.0 / frameRate;
-  var DEG_TO_RAD = Math.PI / 180;
-  var RAD_TO_DEG = 180 / Math.PI;
-  var colors = [
-    ["#df0049", "#660671"],
-    ["#00e857", "#005291"],
-    ["#2bebbc", "#05798a"],
-    ["#ffd200", "#b06c00"],
-  ];
-
-  function Vector2(_x, _y) {
-    (this.x = _x), (this.y = _y);
-    this.Length = function () {
-      return Math.sqrt(this.SqrLength());
-    };
-    this.SqrLength = function () {
-      return this.x * this.x + this.y * this.y;
-    };
-    this.Equals = function (_vec0, _vec1) {
-      return _vec0.x == _vec1.x && _vec0.y == _vec1.y;
-    };
-    this.Add = function (_vec) {
-      this.x += _vec.x;
-      this.y += _vec.y;
-    };
-    this.Sub = function (_vec) {
-      this.x -= _vec.x;
-      this.y -= _vec.y;
-    };
-    this.Div = function (_f) {
-      this.x /= _f;
-      this.y /= _f;
-    };
-    this.Mul = function (_f) {
-      this.x *= _f;
-      this.y *= _f;
-    };
-    this.Normalize = function () {
-      var sqrLen = this.SqrLength();
-      if (sqrLen != 0) {
-        var factor = 1.0 / Math.sqrt(sqrLen);
-        this.x *= factor;
-        this.y *= factor;
-      }
-    };
-    this.Normalized = function () {
-      var sqrLen = this.SqrLength();
-      if (sqrLen != 0) {
-        var factor = 1.0 / Math.sqrt(sqrLen);
-        return new Vector2(this.x * factor, this.y * factor);
-      }
-      return new Vector2(0, 0);
-    };
-  }
-  Vector2.Lerp = function (_vec0, _vec1, _t) {
-    return new Vector2(
-      (_vec1.x - _vec0.x) * _t + _vec0.x,
-      (_vec1.y - _vec0.y) * _t + _vec0.y
-    );
-  };
-  Vector2.Distance = function (_vec0, _vec1) {
-    return Math.sqrt(Vector2.SqrDistance(_vec0, _vec1));
-  };
-  Vector2.SqrDistance = function (_vec0, _vec1) {
-    var x = _vec0.x - _vec1.x;
-    var y = _vec0.y - _vec1.y;
-    return x * x + y * y + z * z;
-  };
-  Vector2.Scale = function (_vec0, _vec1) {
-    return new Vector2(_vec0.x * _vec1.x, _vec0.y * _vec1.y);
-  };
-  Vector2.Min = function (_vec0, _vec1) {
-    return new Vector2(Math.min(_vec0.x, _vec1.x), Math.min(_vec0.y, _vec1.y));
-  };
-  Vector2.Max = function (_vec0, _vec1) {
-    return new Vector2(Math.max(_vec0.x, _vec1.x), Math.max(_vec0.y, _vec1.y));
-  };
-  Vector2.ClampMagnitude = function (_vec0, _len) {
-    var vecNorm = _vec0.Normalized;
-    return new Vector2(vecNorm.x * _len, vecNorm.y * _len);
-  };
-  Vector2.Sub = function (_vec0, _vec1) {
-    return new Vector2(_vec0.x - _vec1.x, _vec0.y - _vec1.y, _vec0.z - _vec1.z);
-  };
-
-  function EulerMass(_x, _y, _mass, _drag) {
-    this.position = new Vector2(_x, _y);
-    this.mass = _mass;
-    this.drag = _drag;
-    this.force = new Vector2(0, 0);
-    this.velocity = new Vector2(0, 0);
-    this.AddForce = function (_f) {
-      this.force.Add(_f);
-    };
-    this.Integrate = function (_dt) {
-      var acc = this.CurrentForce(this.position);
-      acc.Div(this.mass);
-      var posDelta = new Vector2(this.velocity.x, this.velocity.y);
-      posDelta.Mul(_dt);
-      this.position.Add(posDelta);
-      acc.Mul(_dt);
-      this.velocity.Add(acc);
-      this.force = new Vector2(0, 0);
-    };
-    this.CurrentForce = function (_pos, _vel) {
-      var totalForce = new Vector2(this.force.x, this.force.y);
-      var speed = this.velocity.Length();
-      var dragVel = new Vector2(this.velocity.x, this.velocity.y);
-      dragVel.Mul(this.drag * this.mass * speed);
-      totalForce.Sub(dragVel);
-      return totalForce;
-    };
-  }
-
-  function ConfettiPaper(_x, _y) {
-    this.pos = new Vector2(_x, _y);
-    this.rotationSpeed = Math.random() * 600 + 800;
-    this.angle = DEG_TO_RAD * Math.random() * 360;
-    this.rotation = DEG_TO_RAD * Math.random() * 360;
-    this.cosA = 1.0;
-    this.size = 5.0;
-    this.oscillationSpeed = Math.random() * 1.5 + 0.5;
-    this.xSpeed = 40.0;
-    this.ySpeed = Math.random() * 60 + 50.0;
-    this.corners = new Array();
-    this.time = Math.random();
-    var ci = Math.round(Math.random() * (colors.length - 1));
-    this.frontColor = colors[ci][0];
-    this.backColor = colors[ci][1];
-    for (var i = 0; i < 4; i++) {
-      var dx = Math.cos(this.angle + DEG_TO_RAD * (i * 90 + 45));
-      var dy = Math.sin(this.angle + DEG_TO_RAD * (i * 90 + 45));
-      this.corners[i] = new Vector2(dx, dy);
-    }
-    this.Update = function (_dt) {
-      this.time += _dt;
-      this.rotation += this.rotationSpeed * _dt;
-      this.cosA = Math.cos(DEG_TO_RAD * this.rotation);
-      this.pos.x +=
-        Math.cos(this.time * this.oscillationSpeed) * this.xSpeed * _dt;
-      this.pos.y += this.ySpeed * _dt;
-      if (this.pos.y > ConfettiPaper.bounds.y) {
-        this.pos.x = Math.random() * ConfettiPaper.bounds.x;
-        this.pos.y = 0;
-      }
-    };
-    this.Draw = function (_g) {
-      if (this.cosA > 0) {
-        _g.fillStyle = this.frontColor;
-      } else {
-        _g.fillStyle = this.backColor;
-      }
-      _g.beginPath();
-      _g.moveTo(
-        this.pos.x + this.corners[0].x * this.size,
-        this.pos.y + this.corners[0].y * this.size * this.cosA
-      );
-      for (var i = 1; i < 4; i++) {
-        _g.lineTo(
-          this.pos.x + this.corners[i].x * this.size,
-          this.pos.y + this.corners[i].y * this.size * this.cosA
-        );
-      }
-      _g.closePath();
-      _g.fill();
-    };
-  }
-  ConfettiPaper.bounds = new Vector2(0, 0);
-
-  function ConfettiRibbon(
-    _x,
-    _y,
-    _count,
-    _dist,
-    _thickness,
-    _angle,
-    _mass,
-    _drag
-  ) {
-    this.particleDist = _dist;
-    this.particleCount = _count;
-    this.particleMass = _mass;
-    this.particleDrag = _drag;
-    this.particles = new Array();
-    var ci = Math.round(Math.random() * (colors.length - 1));
-    this.frontColor = colors[ci][0];
-    this.backColor = colors[ci][1];
-    this.xOff = Math.cos(DEG_TO_RAD * _angle) * _thickness;
-    this.yOff = Math.sin(DEG_TO_RAD * _angle) * _thickness;
-    this.position = new Vector2(_x, _y);
-    this.prevPosition = new Vector2(_x, _y);
-    this.velocityInherit = Math.random() * 2 + 4;
-    this.time = Math.random() * 100;
-    this.oscillationSpeed = Math.random() * 2 + 2;
-    this.oscillationDistance = Math.random() * 40 + 40;
-    this.ySpeed = Math.random() * 40 + 80;
-    for (var i = 0; i < this.particleCount; i++) {
-      this.particles[i] = new EulerMass(
-        _x,
-        _y - i * this.particleDist,
-        this.particleMass,
-        this.particleDrag
-      );
-    }
-    this.Update = function (_dt) {
-      var i = 0;
-      this.time += _dt * this.oscillationSpeed;
-      this.position.y += this.ySpeed * _dt;
-      this.position.x += Math.cos(this.time) * this.oscillationDistance * _dt;
-      this.particles[0].position = this.position;
-      var dX = this.prevPosition.x - this.position.x;
-      var dY = this.prevPosition.y - this.position.y;
-      var delta = Math.sqrt(dX * dX + dY * dY);
-      this.prevPosition = new Vector2(this.position.x, this.position.y);
-      for (i = 1; i < this.particleCount; i++) {
-        var dirP = Vector2.Sub(
-          this.particles[i - 1].position,
-          this.particles[i].position
-        );
-        dirP.Normalize();
-        dirP.Mul((delta / _dt) * this.velocityInherit);
-        this.particles[i].AddForce(dirP);
-      }
-      for (i = 1; i < this.particleCount; i++) {
-        this.particles[i].Integrate(_dt);
-      }
-      for (i = 1; i < this.particleCount; i++) {
-        var rp2 = new Vector2(
-          this.particles[i].position.x,
-          this.particles[i].position.y
-        );
-        rp2.Sub(this.particles[i - 1].position);
-        rp2.Normalize();
-        rp2.Mul(this.particleDist);
-        rp2.Add(this.particles[i - 1].position);
-        this.particles[i].position = rp2;
-      }
-      if (
-        this.position.y >
-        ConfettiRibbon.bounds.y + this.particleDist * this.particleCount
-      ) {
-        this.Reset();
-      }
-    };
-    this.Reset = function () {
-      this.position.y = -Math.random() * ConfettiRibbon.bounds.y;
-      this.position.x = Math.random() * ConfettiRibbon.bounds.x;
-      this.prevPosition = new Vector2(this.position.x, this.position.y);
-      this.velocityInherit = Math.random() * 2 + 4;
-      this.time = Math.random() * 100;
-      this.oscillationSpeed = Math.random() * 2.0 + 1.5;
-      this.oscillationDistance = Math.random() * 40 + 40;
-      this.ySpeed = Math.random() * 40 + 80;
-      var ci = Math.round(Math.random() * (colors.length - 1));
-      this.frontColor = colors[ci][0];
-      this.backColor = colors[ci][1];
-      this.particles = new Array();
-      for (var i = 0; i < this.particleCount; i++) {
-        this.particles[i] = new EulerMass(
-          this.position.x,
-          this.position.y - i * this.particleDist,
-          this.particleMass,
-          this.particleDrag
-        );
-      }
-    };
-    this.Draw = function (_g) {
-      for (var i = 0; i < this.particleCount - 1; i++) {
-        var p0 = new Vector2(
-          this.particles[i].position.x + this.xOff,
-          this.particles[i].position.y + this.yOff
-        );
-        var p1 = new Vector2(
-          this.particles[i + 1].position.x + this.xOff,
-          this.particles[i + 1].position.y + this.yOff
-        );
-        if (
-          this.Side(
-            this.particles[i].position.x,
-            this.particles[i].position.y,
-            this.particles[i + 1].position.x,
-            this.particles[i + 1].position.y,
-            p1.x,
-            p1.y
-          ) < 0
-        ) {
-          _g.fillStyle = this.frontColor;
-          _g.strokeStyle = this.frontColor;
-        } else {
-          _g.fillStyle = this.backColor;
-          _g.strokeStyle = this.backColor;
-        }
-        if (i == 0) {
-          _g.beginPath();
-          _g.moveTo(this.particles[i].position.x, this.particles[i].position.y);
-          _g.lineTo(
-            this.particles[i + 1].position.x,
-            this.particles[i + 1].position.y
-          );
-          _g.lineTo(
-            (this.particles[i + 1].position.x + p1.x) * 0.5,
-            (this.particles[i + 1].position.y + p1.y) * 0.5
-          );
-          _g.closePath();
-          _g.stroke();
-          _g.fill();
-          _g.beginPath();
-          _g.moveTo(p1.x, p1.y);
-          _g.lineTo(p0.x, p0.y);
-          _g.lineTo(
-            (this.particles[i + 1].position.x + p1.x) * 0.5,
-            (this.particles[i + 1].position.y + p1.y) * 0.5
-          );
-          _g.closePath();
-          _g.stroke();
-          _g.fill();
-        } else if (i == this.particleCount - 2) {
-          _g.beginPath();
-          _g.moveTo(this.particles[i].position.x, this.particles[i].position.y);
-          _g.lineTo(
-            this.particles[i + 1].position.x,
-            this.particles[i + 1].position.y
-          );
-          _g.lineTo(
-            (this.particles[i].position.x + p0.x) * 0.5,
-            (this.particles[i].position.y + p0.y) * 0.5
-          );
-          _g.closePath();
-          _g.stroke();
-          _g.fill();
-          _g.beginPath();
-          _g.moveTo(p1.x, p1.y);
-          _g.lineTo(p0.x, p0.y);
-          _g.lineTo(
-            (this.particles[i].position.x + p0.x) * 0.5,
-            (this.particles[i].position.y + p0.y) * 0.5
-          );
-          _g.closePath();
-          _g.stroke();
-          _g.fill();
-        } else {
-          _g.beginPath();
-          _g.moveTo(this.particles[i].position.x, this.particles[i].position.y);
-          _g.lineTo(
-            this.particles[i + 1].position.x,
-            this.particles[i + 1].position.y
-          );
-          _g.lineTo(p1.x, p1.y);
-          _g.lineTo(p0.x, p0.y);
-          _g.closePath();
-          _g.stroke();
-          _g.fill();
-        }
-      }
-    };
-    this.Side = function (x1, y1, x2, y2, x3, y3) {
-      return (x1 - x2) * (y3 - y2) - (y1 - y2) * (x3 - x2);
-    };
-  }
-  ConfettiRibbon.bounds = new Vector2(0, 0);
-
-  confetti = {};
-  confetti.Context = function (parent) {
-    var i = 0;
-    var canvasParent = document.getElementById(parent);
-    var canvas = document.createElement("canvas");
-    canvas.width = canvasParent.offsetWidth;
-    canvas.height = canvasParent.offsetHeight;
-    canvasParent.appendChild(canvas);
-    var context = canvas.getContext("2d");
-    var interval = null;
-    var confettiRibbonCount = 7;
-    var rpCount = 30;
-    var rpDist = 8.0;
-    var rpThick = 8.0;
-    var confettiRibbons = new Array();
-    ConfettiRibbon.bounds = new Vector2(canvas.width, canvas.height);
-    for (i = 0; i < confettiRibbonCount; i++) {
-      confettiRibbons[i] = new ConfettiRibbon(
-        Math.random() * canvas.width,
-        -Math.random() * canvas.height * 2,
-        rpCount,
-        rpDist,
-        rpThick,
-        45,
-        1,
-        0.05
-      );
-    }
-    var confettiPaperCount = 25;
-    var confettiPapers = new Array();
-    ConfettiPaper.bounds = new Vector2(canvas.width, canvas.height);
-    for (i = 0; i < confettiPaperCount; i++) {
-      confettiPapers[i] = new ConfettiPaper(
-        Math.random() * canvas.width,
-        Math.random() * canvas.height
-      );
-    }
-    this.resize = function () {
-      canvas.width = canvasParent.offsetWidth;
-      canvas.height = canvasParent.offsetHeight;
-      ConfettiPaper.bounds = new Vector2(canvas.width, canvas.height);
-      ConfettiRibbon.bounds = new Vector2(canvas.width, canvas.height);
-    };
-    this.start = function () {
-      this.stop();
-      var context = this;
-      this.interval = setInterval(function () {
-        confetti.update();
-      }, 1000.0 / frameRate);
-    };
-    this.stop = function () {
-      clearInterval(this.interval);
-    };
-    this.update = function () {
-      var i = 0;
-      context.clearRect(0, 0, canvas.width, canvas.height);
-      for (i = 0; i < confettiPaperCount; i++) {
-        confettiPapers[i].Update(dt);
-        confettiPapers[i].Draw(context);
-      }
-      for (i = 0; i < confettiRibbonCount; i++) {
-        confettiRibbons[i].Update(dt);
-        confettiRibbons[i].Draw(context);
-      }
-    };
-  };
-  var confetti = new confetti.Context("confetti");
-  confetti.start();
-
-  // confetti.resize();
+  console.log({
+    document,
+    styleTag,
+  });
 }
