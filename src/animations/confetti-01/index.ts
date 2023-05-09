@@ -1,6 +1,7 @@
 const confettiStyles = `
 .confetti {
     display: flex;
+    pointer-events: none;
     justify-content: center;
     align-items: center;
     position: absolute;
