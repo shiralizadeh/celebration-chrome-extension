@@ -16,7 +16,7 @@ Do you want to celebrate new features during your presentation?! It's time to ro
 
 ## Demo
 
-![Demo](https://raw.githubusercontent.com/shiralizadeh/celebration-chrome-extension/master/assets/demo.png)
+![Demo](https://raw.githubusercontent.com/shiralizadeh/celebration-chrome-extension/master/assets/demo.gif)
 
 ## Requirements
 
