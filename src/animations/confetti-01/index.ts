@@ -8,7 +8,7 @@ const confettiStyles = `
     width: 100%;
     height: 100%;
     overflow: hidden;
-    z-index: 1000;
+    z-index: 2147483647;
   }
   
   .confetti-piece {
@@ -163,8 +163,6 @@ const confettiStyles = `
 `;
 
 export function initConfetti() {
-  console.log("initConfetti");
-
   const styleTag = document.createElement("style");
   const styleText = document.createTextNode(confettiStyles);
 
@@ -172,9 +170,4 @@ export function initConfetti() {
 
   styleTag.appendChild(styleText);
   document.body.appendChild(styleTag);
-
-  console.log({
-    document,
-    styleTag,
-  });
 }

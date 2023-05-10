@@ -166,8 +166,6 @@ const confettiStyles = `
 `;
 
 function initConfetti() {
-  console.log("initConfetti");
-
   const styleTag = document.createElement("style");
   const styleText = document.createTextNode(confettiStyles);
 
@@ -175,11 +173,6 @@ function initConfetti() {
 
   styleTag.appendChild(styleText);
   document.body.appendChild(styleTag);
-
-  console.log({
-    document,
-    styleTag,
-  });
 
   const confettiTag = document.createElement("div");
   confettiTag.className = "confetti";
@@ -199,8 +192,6 @@ enum CelebrationType {
 }
 
 function celebrate(type: CelebrationType) {
-  console.log(`Celebrating ${type}`);
-
   switch (type) {
     case CelebrationType.Confetti:
       initConfetti();
