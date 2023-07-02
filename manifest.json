@@ -8,6 +8,12 @@
   "background": {
     "service_worker": "dist/serviceWorker.js"
   },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*"],
+      "js": ["dist/contentScript.js"]
+    }
+  ],
   "icons": {
     "16": "assets/logo-128.png",
     "48": "assets/logo-128.png",
