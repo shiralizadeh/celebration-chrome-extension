@@ -25,6 +25,8 @@
     "webpack-cli": "^5.1.0"
   },
   "dependencies": {
-    "canvas-confetti": "^1.6.0"
+    "babel-preset-solid": "^1.7.7",
+    "canvas-confetti": "^1.6.0",
+    "solid-js": "^1.7.7"
   }
 }

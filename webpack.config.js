@@ -6,6 +6,7 @@ module.exports = {
   entry: {
     serviceWorker: path.resolve(__dirname, "src", "serviceWorker.ts"),
     contentScript: path.resolve(__dirname, "src", "contentScript.ts"),
+    options: path.resolve(__dirname, "src", "options.tsx"),
   },
   output: {
     path: path.join(__dirname, "/dist"),

@@ -16,7 +16,7 @@
   ],
   "options_ui": {
     "page": "dist/options.html",
-    "open_in_tab": false
+    "open_in_tab": true
   },
   "icons": {
     "16": "assets/logo-128.png",
