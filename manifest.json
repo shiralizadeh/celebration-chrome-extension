@@ -14,6 +14,10 @@
       "js": ["dist/contentScript.js"]
     }
   ],
+  "options_ui": {
+    "page": "dist/options.html",
+    "open_in_tab": false
+  },
   "icons": {
     "16": "assets/logo-128.png",
     "48": "assets/logo-128.png",
