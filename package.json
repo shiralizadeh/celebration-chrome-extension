@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
+    "watch": "npm run build -- --watch",
     "esbuild": "esbuild src/*.ts --bundle --minify --outdir=dist"
   },
   "keywords": [],
