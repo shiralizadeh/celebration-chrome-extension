@@ -1,27 +1,32 @@
-function initConfetti() {
-  document.dispatchEvent(new Event("onCelebration"));
+export enum ConfettiType {
+  Centri = "0",
+  Topish = "1",
 }
 
-enum CelebrationType {
-  Confetti = "confetti",
-}
+export type ConfettiEvent = CustomEvent & {
+  confettiType: ConfettiType;
+};
 
-function celebrate(type: CelebrationType) {
-  switch (type) {
-    case CelebrationType.Confetti:
-      initConfetti();
-      break;
-    default:
-      break;
-  }
+function initConfetti(confettiType: ConfettiType) {
+  const event = new CustomEvent("onCelebration") as ConfettiEvent;
+
+  event.confettiType = confettiType;
+
+  document.dispatchEvent(event);
 }
 
 chrome.action.onClicked.addListener((tab) => {
-  chrome.scripting
-    .executeScript({
-      target: { tabId: tab.id ? tab.id : -1 },
-      func: initConfetti,
-      args: [],
-    })
-    .then();
+  chrome.storage.sync.get("confettiType", function (data: any) {
+    const confettiType = data.confettiType
+      ? data.confettiType
+      : ConfettiType.Centri;
+
+    chrome.scripting
+      .executeScript({
+        target: { tabId: tab.id ? tab.id : -1 },
+        func: initConfetti,
+        args: [confettiType],
+      })
+      .then();
+  });
 });

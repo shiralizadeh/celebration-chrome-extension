@@ -3,7 +3,7 @@
   "description": "Celebration Animation in your tab",
   "version": "0.1",
   "manifest_version": 3,
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "storage"],
   "action": {},
   "background": {
     "service_worker": "dist/serviceWorker.js"
@@ -16,7 +16,7 @@
   ],
   "options_ui": {
     "page": "dist/options.html",
-    "open_in_tab": true
+    "open_in_tab": false
   },
   "icons": {
     "16": "assets/logo-128.png",
