@@ -32,6 +32,12 @@ _No settings at the moment_
 
 - Confetti animation
 
+### 0.0.2
+
+- Fix multiple clicks bugs
+- Change default Confetti animation
+- Options to select your favorite confetti
+
 ---
 
 ## **Contributors**
